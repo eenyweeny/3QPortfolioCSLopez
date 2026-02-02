@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Club Signups</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffeed3;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #fcefe1;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    select {
+      padding: 8px;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #555;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #d8c3a5;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    a {
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .back-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #e6b98c;
+    color: black;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.2s, transform 0.1s;
+    }
+
+  .back-btn:hover {
+    background-color: #d6a56f;
+    transform: translateY(-1px);
+    }
+
+  .back-btn:active {
+  transform: translateY(0);
+    }
+
+  </style>
+
+  <script>
+    let allSignups = [];
+
+    function loadSignups() {
+      const data = localStorage.getItem("clubSignups");
+
+      if (!data) {
+        document.getElementById("output").innerHTML =
+          "<div class='message'>No sign-ups saved.</div>";
+        return;
+      }
+
+      allSignups = JSON.parse(data);
+      populateDropdown();
+      display(allSignups);
+    }
+
+    function populateDropdown() {
+      const clubs = [...new Set(allSignups.map(s => s.club))];
+      const select = document.getElementById("clubSelect");
+
+      clubs.forEach(club => {
+        const opt = document.createElement("option");
+        opt.value = club;
+        opt.textContent = club;
+        select.appendChild(opt);
+      });
+    }
+
+    function filterClub() {
+      const club = document.getElementById("clubSelect").value;
+      const filtered = club === "ALL"
+        ? allSignups
+        : allSignups.filter(s => s.club === club);
+
+      display(filtered);
+    }
+
+    function display(list) {
+      if (list.length === 0) {
+        document.getElementById("output").innerHTML =
+          "<div class='message'>No Sign Ups for the club</div>";
+        document.getElementById("total").textContent = "";
+        return;
+      }
+
+      let html = `
+        <table>
+          <tr>
+            <th>Club</th>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Grade</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Intern | Extern</th>
+          </tr>
+      `;
+
+      list.forEach(s => {
+        html += `
+          <tr>
+            <td>${s.club}</td>
+            <td>${s.id}</td>
+            <td>${s.fullname}</td>
+            <td>${s.grade}</td>
+            <td>${s.email}</td>
+            <td>${s.mobile}</td>
+            <td>${s.status}</td>
+          </tr>
+        `;
+      });
+
+      html += "</table>";
+
+      document.getElementById("output").innerHTML = html;
+      document.getElementById("total").textContent =
+        "Total Signup : " + list.length;
+    }
+  </script>
+</head>
+
+<body onload="loadSignups()">
+
+<div class="container">
+
+  <h1>List of Students Who Signed-Up</h1>
+
+  <a href="Q3_2GCesiumLopez.html" class="back-btn">← Back to Signup</a>
+
+  <br>
+
+  <label>Select Your Club:
+    <select id="clubSelect" onchange="filterClub()">
+      <option value="ALL">ALL</option>
+    </select>
+  </label>
+
+  <p id="total"></p>
+  <div id="output"></div>
+
+</div>
+
+<footer>@Reen Lopez, 2026</footer>
+</body>
+</html>

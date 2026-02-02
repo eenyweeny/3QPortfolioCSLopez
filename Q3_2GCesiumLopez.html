@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  
 <head>
   <meta charset="UTF-8">
   <title>Club Application Form</title>
@@ -61,9 +60,10 @@
     }
 
     .buttons input {
-      width: 120px;
+      width: 140px;
       margin: 10px;
       padding: 10px;
+      cursor: pointer;
     }
   </style>
 
@@ -73,37 +73,47 @@
         return false;
       }
 
-      localStorage.setItem("student_id", document.getElementsByName("student_id")[0].value);
-      localStorage.setItem("full_name", document.getElementsByName("full_name")[0].value);
-      localStorage.setItem("birthday", document.getElementsByName("birthday")[0].value);
-      localStorage.setItem("email", document.getElementsByName("email")[0].value);
-      localStorage.setItem("mobile", document.getElementsByName("mobile")[0].value);
-      localStorage.setItem("grade_level", document.getElementsByName("grade_level")[0].value);
-      localStorage.setItem("status", document.querySelector('input[name="status"]:checked').value);
-      localStorage.setItem("club", document.getElementsByName("club")[0].value);
-      localStorage.setItem("reason", document.getElementsByName("reason")[0].value);
+      const student = {
+        id: document.getElementsByName("student_id")[0].value,
+        fullname: document.getElementsByName("full_name")[0].value,
+        birthday: document.getElementsByName("birthday")[0].value,
+        email: document.getElementsByName("email")[0].value,
+        mobile: document.getElementsByName("mobile")[0].value,
+        grade: document.getElementsByName("grade_level")[0].value,
+        status: document.querySelector('input[name="status"]:checked').value,
+        club: document.getElementsByName("club")[0].value,
+        reason: document.getElementsByName("reason")[0].value
+      };
 
-      window.location.href = "Q3_2GCesiumLopez_Submitted.html";
+      let signups = JSON.parse(localStorage.getItem("clubSignups")) || [];
+      signups.push(student);
+      localStorage.setItem("clubSignups", JSON.stringify(signups));
+
+      alert("Signup saved successfully!");
+      document.querySelector("form").reset();
+
       return false;
     }
 
-    function confirmReset() {
-      return confirm("All data will be cleared. Continue?");
+    function confirmReset(btn) {
+      if (confirm("All data will be cleared. Continue?")) {
+        btn.form.reset();
+      }
     }
 
     function checkEmpty(element) {
-      if (element.value.trim() === "") {
-        element.classList.add("invalid");
-      } else {
-        element.classList.remove("invalid");
-      }
+      element.classList.toggle("invalid", element.value.trim() === "");
+    }
+
+    function viewSignups() {
+      window.location.href = "Q3_2GCesiumLopez_ViewSignups.html";
     }
   </script>
 </head>
 
 <body>
 
-<form onsubmit="return confirmSubmit();" onreset="return confirmReset();">
+<form onsubmit="return confirmSubmit();">
 
   <fieldset>
     <legend>Student Information</legend>
@@ -135,45 +145,46 @@
     <label>Grade Level:
       <select name="grade_level" required>
         <option value="">-- Select Grade --</option>
-        <option value="Grade 7">Grade 7</option>
-        <option value="Grade 8">Grade 8</option>
-        <option value="Grade 9">Grade 9</option>
-        <option value="Grade 10">Grade 10</option>
-        <option value="Grade 11">Grade 11</option>
-        <option value="Grade 12">Grade 12</option>
+        <option>Grade 7</option>
+        <option>Grade 8</option>
+        <option>Grade 9</option>
+        <option>Grade 10</option>
+        <option>Grade 11</option>
+        <option>Grade 12</option>
       </select>
     </label>
 
-    <label>Intern / Extern:
-      <div class="radio-group">
-        <label><input type="radio" name="status" value="Intern" required> Intern</label>
-        <label><input type="radio" name="status" value="Extern"> Extern</label>
-      </div>
-    </label>
+    <label>Intern / Extern:</label>
+    <div class="radio-group">
+      <label><input type="radio" name="status" value="Intern" required> Intern</label>
+      <label><input type="radio" name="status" value="Extern"> Extern</label>
+    </div>
 
     <label>Preferred Club:
       <select name="club" required>
-        <option value="">-- Select Club --</option>
-        <option value="SaGala Dance Club">SaGala Dance Club</option>
-        <option value="Himig Agham">Himig Agham</option>
-        <option value="Sightlines">Sightlines</option>
-        <option value="Kamalayan">Kamalayan</option>
-        <option value="Math Club">Math Club</option>
+        <option value="">---Select Club---</option>
+        <option>SaGala Dance Club</option>
+        <option>Himig Agham</option>
+        <option>Sightlines</option>
+        <option>Kamalayan</option>
+        <option>Math Club</option>
       </select>
     </label>
   </fieldset>
 
   <fieldset>
-    <legend>Why do you want to join?</legend>
+    <legend>Why do you want to join the club?</legend>
     <textarea name="reason" required onblur="checkEmpty(this)"></textarea>
   </fieldset>
 
   <div class="buttons">
     <input type="submit" value="Submit">
-    <input type="reset" value="Reset">
+    <input type="button" value="Reset" onclick="confirmReset(this)">
+    <input type="button" value="View Signups" onclick="viewSignups()">
   </div>
 
 </form>
 
+<footer>@Reen Lopez, 2026</footer>
 </body>
 </html>
