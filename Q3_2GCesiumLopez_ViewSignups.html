@@ -50,35 +50,38 @@
       font-weight: bold;
     }
 
-    a {
+    .back-btn {
       display: inline-block;
+      padding: 10px 18px;
+      background-color: #e6b98c;
+      color: black;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.2s, transform 0.1s;
       margin-bottom: 15px;
     }
 
-    .back-btn {
-    display: inline-block;
-    padding: 10px 18px;
-    background-color: #e6b98c;
-    color: black;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.2s, transform 0.1s;
+    .back-btn:hover {
+      background-color: #d6a56f;
+      transform: translateY(-1px);
     }
 
-  .back-btn:hover {
-    background-color: #d6a56f;
-    transform: translateY(-1px);
+    .back-btn:active {
+      transform: translateY(0);
     }
-
-  .back-btn:active {
-  transform: translateY(0);
-    }
-
   </style>
 
   <script>
+    const CLUBS = [
+      "SaGala Dance Club",
+      "Himig Agham",
+      "Sightlines",
+      "Kamalayan",
+      "Math Club"
+    ];
+
     let allSignups = [];
 
     function loadSignups() {
@@ -96,34 +99,37 @@
     }
 
     function populateDropdown() {
-      const clubs = [...new Set(allSignups.map(s => s.club))];
       const select = document.getElementById("clubSelect");
+      select.innerHTML = `<option value="ALL">ALL</option>`;
 
-      clubs.forEach(club => {
-        const opt = document.createElement("option");
-        opt.value = club;
-        opt.textContent = club;
-        select.appendChild(opt);
+      CLUBS.forEach(club => {
+        const option = document.createElement("option");
+        option.value = club;
+        option.textContent = club;
+        select.appendChild(option);
       });
     }
 
     function filterClub() {
-      const club = document.getElementById("clubSelect").value;
-      const filtered = club === "ALL"
-        ? allSignups
-        : allSignups.filter(s => s.club === club);
+      const selected = document.getElementById("clubSelect").value;
 
-      display(filtered);
-    }
-
-    function display(list) {
-      if (list.length === 0) {
-        document.getElementById("output").innerHTML =
-          "<div class='message'>No Sign Ups for the club</div>";
-        document.getElementById("total").textContent = "";
+      if (selected === "ALL") {
+        display(allSignups);
         return;
       }
 
+      const filtered = allSignups.filter(s => s.club === selected);
+
+      if (filtered.length === 0) {
+        document.getElementById("output").innerHTML =
+          "<div class='message'>No Sign Ups for the club</div>";
+        document.getElementById("total").textContent = "Total Signup : 0";
+      } else {
+        display(filtered);
+      }
+    }
+
+    function display(list) {
       let html = `
         <table>
           <tr>
@@ -164,7 +170,8 @@
 
 <div class="container">
 
-  <h1>List of Students Who Signed-Up</h1>
+  <h1>Show List of Students Who Signed-Up</h1>
+  <p>by AL Mendoza</p>
 
   <a href="Q3_2GCesiumLopez.html" class="back-btn">← Back to Signup</a>
 
